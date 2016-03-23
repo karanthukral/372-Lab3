@@ -1,6 +1,8 @@
 clear all
 close all
 
+addpath('images')
+addpath('helpers')
 load feat.mat
 
 cloth = readim('cloth.im');

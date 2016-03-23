@@ -1,0 +1,35 @@
+clear all
+close all
+
+addpath('images')
+load ('images/feat.mat')
+
+cloth = readim('images/cloth.im');
+cork = readim('images/cork.im');
+cotton = readim('images/cotton.im');
+face = readim('images/face.im');
+grass = readim('images/grass.im');
+paper = readim('images/paper.im');
+pigskin = readim('images/pigskin.im');
+raiffa = readim('images/raiffa.im');
+stone = readim('images/stone.im');
+straw = readim('images/straw.im');
+wood = readim('images/wood.im');
+wool = readim('images/wool.im');
+
+dataSet = f8;
+testDataSet = f8t;
+
+for i = 1 : 10
+    data = [];
+    testData = [];
+    for j = i * 16 - 15 : i * 16
+        if (dataSet(3, j) == i)
+            data = [data; dataSet(1, j) dataSet(2, j)];
+            testData = [testData; testDataSet(1, j) testDataSet(2, j)];
+        end
+    end
+    
+    [mu, sigma] = Utils.learnData(data);
+    [tMu, tSigma] = Utils.learnData(testData);
+end
