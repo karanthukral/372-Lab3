@@ -18,8 +18,15 @@ straw = readim('straw.im');
 wood = readim('wood.im');
 wool = readim('wool.im');
 
-dataSet = f8;
-testDataSet = f8t;
+dataSet = f2;
+testDataSet = f2t;
+
+means = [];
+tMeans = [];
+sigmas = [];
+tSigmas = [];
+pts = [];
+tPts = [];
 
 for i = 1 : 10
     data = [];
@@ -33,4 +40,20 @@ for i = 1 : 10
     
     [mu, sigma] = Utils.learnData(data);
     [tMu, tSigma] = Utils.learnData(testData);
+    
+    means = [means; mu];
+	tMeans = [tMeans; tMu];
+	sigmas = [sigmas; sigma];
+	tSigmas = [tSigmas; tSigma];
+	pts = [pts; data];
+	tPts = [tPts; testData];
 end
+
+boundary = zeros(1, 160);
+testBoundary = zeros(1, 160);
+
+for a = 1 : 160
+    boundary(1,a) = Utils.MICDClassifier([testDataSet(1, a), testDataSet(2, a)], means, sigmas);
+end
+
+[C,order] = confusionmat(testDataSet(3, :), boundary(1, :));

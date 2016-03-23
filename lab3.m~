@@ -2,23 +2,31 @@ clear all
 close all
 
 addpath('images')
-load ('images/feat.mat')
+addpath('helpers')
+load feat.mat
 
-cloth = readim('images/cloth.im');
-cork = readim('images/cork.im');
-cotton = readim('images/cotton.im');
-face = readim('images/face.im');
-grass = readim('images/grass.im');
-paper = readim('images/paper.im');
-pigskin = readim('images/pigskin.im');
-raiffa = readim('images/raiffa.im');
-stone = readim('images/stone.im');
-straw = readim('images/straw.im');
-wood = readim('images/wood.im');
-wool = readim('images/wool.im');
+cloth = readim('cloth.im');
+cork = readim('cork.im');
+cotton = readim('cotton.im');
+face = readim('face.im');
+grass = readim('grass.im');
+paper = readim('paper.im');
+pigskin = readim('pigskin.im');
+raiffa = readim('raiffa.im');
+stone = readim('stone.im');
+straw = readim('straw.im');
+wood = readim('wood.im');
+wool = readim('wool.im');
 
 dataSet = f8;
 testDataSet = f8t;
+
+means = [];
+tMeans = [];
+sigmas = [];
+tSigmas = [];
+pts = [];
+tPts = [];
 
 for i = 1 : 10
     data = [];
@@ -32,4 +40,22 @@ for i = 1 : 10
     
     [mu, sigma] = Utils.learnData(data);
     [tMu, tSigma] = Utils.learnData(testData);
+    
+    means = [means; mu];
+	tMeans = [tMeans; tMu];
+	sigmas = [sigmas; sigma];
+	tSigmas = [tSigmas; tSigma];
+	pts = [pts; data];
+	tPts = [tPts; testData];
 end
+
+boundary = zeros(1, 160);
+testBoundary = zeros(1, 160);
+
+for a = 1 : 160
+    boundary(1,a) = Utils.MICDClassifier([testDataSet(1, a), testDataSet(2, a)], means, sigmas);
+end
+
+for k=1:length(testDataSet(:,1))
+end
+[C,order] = confusionmat(testDataSet(3, :), boundary(1, :));
