@@ -18,8 +18,8 @@ straw = readim('straw.im');
 wood = readim('wood.im');
 wool = readim('wool.im');
 
-dataSet = f2;
-testDataSet = f2t;
+dataSet = f32;
+testDataSet = f32t;
 
 means = [];
 tMeans = [];
@@ -57,3 +57,28 @@ for a = 1 : 160
 end
 
 [C,order] = confusionmat(testDataSet(3, :), boundary(1, :));
+
+error = 0;
+for i = 1 : 10
+    for j = 1 : 10
+        if (i ~= j)
+            error = error + C(i, j);
+        end
+    end
+end
+error = error/160;
+
+% Image Classification and Segmentation
+
+matrix = multf8;
+ cimage = zeros(length(matrix(:,1)), length(matrix(1,:)));
+ for j=1:length(matrix(:,1))
+ 	for k=1:length(matrix(1,:))
+ 		cimage(j,k) = Utils.MICDClassifier(matrix(j,k), means, sigmas);
+ 	end
+ end
+
+ figure
+ imagesc(cimage)
+ figure
+ imagesc(multim)
